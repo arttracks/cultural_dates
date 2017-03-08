@@ -1,12 +1,10 @@
 require 'parslet'
 
-require_relative "utilities/parser_helpers"
 require_relative "date_parser"
 
 module CulturalDates
   class DateStringParser < Parslet::Parser
 
-    include ParserHelpers
     date = DateParser.new
 
 

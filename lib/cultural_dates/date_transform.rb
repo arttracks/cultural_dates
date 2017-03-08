@@ -5,7 +5,6 @@ require 'active_support/core_ext/integer/inflections'
 module CulturalDates
   class DateTransform < Parslet::Transform
 
-    # included for standalone use
     rule(:certainty_value => simple(:x)) { x != "?"}
 
    

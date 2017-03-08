@@ -4,6 +4,13 @@ module CulturalDates
   module DateWordHelpers 
     include Parslet
 
+    rule(:space)    { match('\s').repeat(1) }
+    rule(:space?)   { space.maybe }
+    rule(:comma)            { str(",") >> space }
+    rule(:period)           { str(".") >> space }
+    rule(:certainty)        { (str("?") | str("")).as(:certainty_value).as(:certainty)}
+
+
     rule(:ordinal_suffix) { str("th") | str("st") | str("nd") | str("rd")}
     rule(:era)            { (str("CE") | str("ce") | str("BCE") | str("bce") | str("AD")  | str("ad") | str("BC") | str('bc') | str("")).as(:era)}
     rule(:the)            { match['tT'] >> str("he") >> space}

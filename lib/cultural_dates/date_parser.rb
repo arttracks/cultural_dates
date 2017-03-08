@@ -1,7 +1,6 @@
 require 'parslet'
 
-require_relative "utilities/parser_helpers"
-require_relative "utilities/date_word_helpers"
+require_relative "date_word_helpers"
 
 module CulturalDates
 
@@ -15,7 +14,6 @@ module CulturalDates
   # * :timezone
   #
   class DateParser  < Parslet::Parser
-    include ParserHelpers
     include DateWordHelpers
     include Parslet
 

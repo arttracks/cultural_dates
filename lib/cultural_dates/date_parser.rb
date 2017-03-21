@@ -28,7 +28,7 @@ module CulturalDates
     rule(:isodate) { year_year >> str("-") >> month_number >> str("-") >> day_number >> timezone.maybe >> era.maybe >> certainty }
 
     rule(:date) {
-        (century | 
+       (century | 
         decade  |
         day     |
         year    |

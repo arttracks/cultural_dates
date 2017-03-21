@@ -20,6 +20,13 @@ describe CulturalDates::DateParser do
     results[:date][:era].must_equal ""
   end
 
+
+  it "works with centuries BV" do
+    results = p.parse("the 19th Century BC")
+    results[:date][:century].must_equal "19"
+    results[:date][:era].must_equal "BC"
+  end
+
   it "works with decades" do
     results = p.parse("the 1990s")
     results[:date][:decade].must_equal "1990"
@@ -119,6 +126,12 @@ describe CulturalDates::DateParser do
     results = p.parse("1990 BCE")
     results[:date][:year].must_equal "1990"
     results[:date][:era].must_equal "BCE"
+  end 
+
+  it "works with years BC" do
+    results = p.parse("1 BC")
+    results[:date][:year].must_equal "1"
+    results[:date][:era].must_equal "BC"
   end 
 
   it "works with years ad" do

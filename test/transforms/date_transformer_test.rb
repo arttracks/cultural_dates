@@ -14,63 +14,74 @@ describe CulturalDates::DateTransform do
   describe "EDTF conversion" do
     it "creates EDTF for day precision" do
       results = parse_and_tranform("October 17th, 1990")
-      results[:edtf].must_equal "1990-10-17"
+      results.must_equal "1990-10-17"
     end
     it "creates EDTF for day precision with uncertainty" do
       results = parse_and_tranform("October 17th, 1990?")
-      results[:edtf].must_equal "1990-10-17?"
+      results.must_equal "1990-10-17?"
     end
 
     it "creates EDTF for month precision" do
       results = parse_and_tranform("October 1990")
-      results[:edtf].must_equal "1990-10-uu"
+      results.must_equal "1990-10-uu"
     end
     it "creates EDTF for month precision with uncertainty" do
       results = parse_and_tranform("October 1990?")
-      results[:edtf].must_equal "1990-10-uu?"
+      results.must_equal "1990-10-uu?"
     end
 
     it "creates EDTF for year precision" do
       results = parse_and_tranform("1990")
-      results[:edtf].must_equal "1990-uu-uu"
+      results.must_equal "1990-uu-uu"
     end
 
     it "creates EDTF for year precision BCE" do
       results = parse_and_tranform("1990 BCE")
-      results[:edtf].must_equal "-1990-uu-uu"
+      results.must_equal "-1990-uu-uu"
     end
+
+    it "creates EDTF for year precision BC" do
+      results = parse_and_tranform("1 BC")
+      results.must_equal "-0001-uu-uu"
+    end
+
     it "creates EDTF for year precision BCE with uncertainty" do
       results = parse_and_tranform("1990 BCE?")
-      results[:edtf].must_equal "-1990-uu-uu?"
+      results.must_equal "-1990-uu-uu?"
     end
 
     it "creates EDTF for year precision with uncertainty" do
       results = parse_and_tranform("1990?")
-      results[:edtf].must_equal "1990-uu-uu?"
+      results.must_equal "1990-uu-uu?"
     end
 
     it "creates EDTF for centuries" do
       results = parse_and_tranform("the 21st Century")
-      results[:edtf].must_equal "20uu-uu-uu"
+      results.must_equal "20uu-uu-uu"
     end
 
     it "creates EDTF for centuries BCE" do
       results = parse_and_tranform("the 3rd century BCE")
-      results[:edtf].must_equal "-03uu-uu-uu"
+      results.must_equal "-03uu-uu-uu"
+    end
+
+    it "creates EDTF for centuries BC" do
+      results = parse_and_tranform("the 3rd century BC")
+      results.must_equal "-03uu-uu-uu"
     end
 
     it "creates EDTF for uncertain centuries" do
       results = parse_and_tranform("the 21st Century?")
-      results[:edtf].must_equal "20uu-uu-uu?"
+      results.must_equal "20uu-uu-uu?"
     end
     it "creates EDTF for decades" do
       results = parse_and_tranform("the 1990s")
-      results[:edtf].must_equal "199u-uu-uu"
+      results.must_equal "199u-uu-uu"
     end
 
     it "creates EDTF for uncertain decades" do
       results = parse_and_tranform("the 1990s?")
-      results[:edtf].must_equal "199u-uu-uu?"
+      results.must_equal "199u-uu-uu?"
     end
   end
 

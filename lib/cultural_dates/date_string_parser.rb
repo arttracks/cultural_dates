@@ -4,6 +4,7 @@ require_relative "date_parser"
 
 module CulturalDates
   class DateStringParser < Parslet::Parser
+    include DateWordHelpers
 
     date = DateParser.new
 

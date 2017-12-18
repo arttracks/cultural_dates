@@ -25,28 +25,50 @@ Or install it yourself as:
 ```ruby
 require "cultural_dates"
 
-string ="sometime between 1650 and January 2001 until October 15, 2006"
+string = "January 2001"
+date = CulturalDates::CulturalDate.new(string)
 
-date = CulturalDates::CulturalInterval.new(string)
+puts "String:         #{string}"
+puts "as EDTF:        #{date.to_edtf}"   # <-- 2001-01-uu
+puts "as a Ruby Date: #{date.value}"     # <-- 2001-01-01
+puts "as a String:    #{date.to_s}"      # <-- January 2001
+puts "Earliest Bound: #{date.earliest}"  # <-- 2001-01-01
+puts "Latest Bound:   #{date.latest}"    # <-- 2001-01-31
 
-puts "Entry: #{string}"
+puts "\n-------------------------------------------------------------------\n\n"
 
-puts "\n Allen Dates as Strings"
-puts "BOTB: #{date.botb} - EOTB: #{date.eotb}, BOTE: #{date.bote} - EOTE: #{date.eote}"
+interval_string ="sometime between 1650 and January 2001 until October 15, 2006"
+interval = CulturalDates::CulturalInterval.new(interval_string)
 
-puts "\nas EDTF"
-puts "BOTB: #{date.botb.to_edtf} - EOTB: #{date.eotb.to_edtf}, BOTE: #{date.bote.to_edtf} - EOTE: #{date.eote.to_edtf}"
+puts "Interval to Parse:"
+puts "      #{interval_string}"
+
+puts "\n Four-point dates as strings:"
+puts "      Begin of the Begin: #{interval.botb}"  # <-- 1650
+puts "      End of the Begin:   #{interval.eotb}"  # <-- January 2001
+puts "      Begin of the End:   #{interval.bote}"  # <-- October 15, 2006
+puts "      End of the End:     #{interval.eote}"  # <-- October 15, 2006
+
+puts "\n and as EDTF:"
+puts "      Begin of the Begin: #{interval.botb.to_edtf}"  # <-- 1650-uu-uu
+puts "      End of the Begin:   #{interval.eotb.to_edtf}"  # <-- 2001-01-uu
+puts "      Begin of the End:   #{interval.bote.to_edtf}"  # <-- 2006-10-15
+puts "      End of the End:     #{interval.eote.to_edtf}"  # <-- 2006-10-15
 
 puts "\nas EDTF Intervals"
-puts "Beginning: #{date.begin_interval}, Ending: #{date.end_interval}"
-puts "Possible: #{date.possible_interval}, Definite: #{date.definite_interval}"
+puts "      Beginning: #{interval.begin_interval}"    # <-- 1650-01-01/2001-01-31
+puts "      Ending:    #{interval.end_interval}"      # <-- 2006-10-15/2006-10-15
+puts "      Possible:  #{interval.possible_interval}" # <-- 1650-01-01/2006-10-15
+puts "      Definite:  #{interval.definite_interval}" # <-- 2001-01-31/2006-10-15
 
 puts "\nas Bounds"
-puts "Earliest Bound: #{date.earliest}, Latest Bound: #{date.latest}"
-puts "Earliest Definite Bound: #{date.earliest_definite}, Latest Definite Bound: #{date.latest_definite}"
+puts "      Earliest Bound:        #{interval.earliest}"          # <-- 1650-01-01
+puts "      Latest Bound:          #{interval.latest}"            # <-- 2006-10-15
+puts "      Earliest Def. Bound:   #{interval.earliest_definite}" # <-- 2001-01-31
+puts "      Latest Definite Bound: #{interval.latest_definite}"   # <-- 2006-10-15
 
 puts "\nBack to String:"
-puts "#{date.to_s}"
+puts "      #{interval.to_s}" # <-- sometime between 1650 and January 2001 until October 15, 2006
 ```
 
 ## Implementation Details

@@ -8,7 +8,6 @@ Gem::Specification.new do |spec|
   spec.version       = CulturalDates::VERSION
   spec.authors       = ["David Newbury"]
   spec.email         = ["david.newbury@gmail.com"]
-
   spec.summary       = %q{Parse and validate dates and intervals for cultural heritage applications.}
   spec.homepage      = "http://www.museumprovenance.org"
   spec.license       = "MIT"
@@ -37,4 +36,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.13"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "minitest", "~> 5.0"
+  spec.add_development_dependency "m", '~> 1.5.0'
 end

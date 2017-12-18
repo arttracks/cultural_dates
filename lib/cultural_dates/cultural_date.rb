@@ -9,6 +9,13 @@ module CulturalDates
       def parse(val)
         return CulturalDate.new(val)
       end
+
+      def edtf(edtf_date)
+        val = CulturalDate.new
+        date = Date.edtf(edtf_date) || EDTF::Unknown.new
+        val.instance_variable_set(:@value, date)
+        val
+      end
     end
 
     def values
@@ -25,32 +32,59 @@ module CulturalDates
         @value <=> other
       end
     end
-    
 
     def inspect
       @value.inspect
     end
-    
-    def to_s
-      formatted_string(@value)
-    end
 
     def initialize(val="")
-      parse_result = DateParser.new.parse(val)
-      @value = Date.edtf(DateTransform.new.apply(parse_result))
+      if val
+        begin
+          parse_result = DateParser.new.parse(val)
+          transformed_result = DateTransform.new.apply(parse_result)
+          if transformed_result
+            @value = Date.edtf(transformed_result)
+          end
+        rescue Parslet::ParseFailed => e
+          # puts e
+          @value = nil
+        end
+      else
+        @value = nil
+      end
+    end
+
+    def known?
+      return false if @value.instance_of?(EDTF::Unknown) || @value.nil?
+      true
+    end
+
+    def unknown?
+      return !self.known?
     end
 
     def earliest
-      EDTF.parse(@value.to_s)
+      return nil if @value.nil?
+      return @value if @value.instance_of? EDTF::Unknown
+      new_d = EDTF.parse(@value.to_s)
+      if new_d.year < 0
+        if @value.unspecified.year[2]
+          new_d = new_d.advance(:years =>-99)
+        end
+      end
+      new_d
     end
 
     def latest
+      return nil if @value.nil?
+      return @value if @value.instance_of? EDTF::Unknown
       new_d = @value.clone
-      if new_d.unspecified.year[2]
-        new_d = new_d.advance(:years =>99)
+      if new_d.unspecified.year[2] 
+        new_d = new_d.advance(:years =>99) if new_d.year >=0
+
         new_d.year_precision!
       elsif new_d.unspecified.year[3]
-        new_d = new_d.advance(:years =>9)
+        new_d = new_d.advance(:years =>9) if new_d.year >=0
         new_d.year_precision!
       elsif new_d.unspecified? :day
        new_d.month_precision!
@@ -63,12 +97,17 @@ module CulturalDates
       new_d - 1
     end
 
+    def to_edtf
+      return nil if @value.nil?
+      return @value.edtf
+    end
+
     def to_s
      date = @value
      return nil unless date.is_a? Date
      str = ""
      if !date.unspecified? :day
-       str = date.strftime("%B %e, ")
+       str = date.strftime("%B %-d, ")
        if date.year >=0
          year_str = date.year.to_s
          year_str += " CE" if date.year < 1000
@@ -93,10 +132,8 @@ module CulturalDates
        if date.year >=1
          str = date.year.to_s
          str += " CE" if date.year < 1000
-       elsif date.year == 0
-         str = "1 BCE"
        else
-         str = "#{-date.year} BCE"
+         str = "#{-date.year+1} BCE"
        end
       elsif !date.unspecified.year[2]
         str = "the #{date.year}s"
@@ -104,7 +141,7 @@ module CulturalDates
         bce = false
         year = (date.year/100+1)
         if year <= 0
-          year = -(year-1)
+          year = -(year-2)
           bce = true
         end  
         str = "the #{year.ordinalize} century"

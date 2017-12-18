@@ -6,6 +6,15 @@ describe "Parsing Dates" do
     @val = CulturalDate.parse("1990")
   end
  
+  it "handles known dates" do
+    @val.known?.must_equal true
+  end
+
+  it "marks blank dates as unknown" do
+    CulturalDate.parse("").known?.must_equal false
+  end
+
+
   it "has a class parse method" do
     CulturalDate.parse("1990")  
   end
@@ -16,7 +25,8 @@ describe "Parsing Dates" do
 
   it "has handles equality" do
     Date.edtf("1990-uu-uu").must_equal @val
-    # @val.must_equal Date.edtf("1990-uu-uu")  # Not sure why this fails.  Think it has to do with the EDTF library
+    # @val.must_equal Date.edtf("1990-uu-uu")  # Not sure why this fails.  
+    # Think it has to do with the EDTF library?
   end
   it "handles self equality" do
     @val.must_equal CulturalDate.parse("1990")
@@ -39,14 +49,12 @@ describe "possible syntaxes" do
 
   describe "handles many forms" do
 
-    forms = ["10 ad", "1 BC", "6000 BCE", "800","1990", "900 CE", "800 BCE",
-    "19th century", "20th Century ad", "19 Century", "4th century BC",
+    forms = [
     "June 11 1995", "Oct. 17, 1980", "june 15, 90 BCE", "9 June 1932", "9 June, 1932", "10/17/1980","1980-10-17",
     "June 11, 1995", "June 11, 880 CE", "June 11, 880 BCE", "June 11, 1990?",
     "June 2000 CE", "March 880", "January 80", "aug. 1995", 'August, 1995', 'Aug., 1995',
     "October 1990", "October 990 CE",
     "the 1990s",  "1990s", "1990s CE", "the 1990s AD",
-    "the 19th century", "the 1st century CE", "the 2nd century BCE",
     ]
 
     unsupported_forms = ["October 1990?", "1990?", "the 1990s?", "the 19th century?", 

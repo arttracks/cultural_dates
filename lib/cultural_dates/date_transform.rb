@@ -6,10 +6,26 @@ module CulturalDates
   class DateTransform < Parslet::Transform
 
     rule(:certainty_value => simple(:x)) { x != "?"}
+ 
+    rule(begin: subtree(:x)) {{botb: x, eotb: x}}
+    rule(begin: subtree(:x), bote: subtree(:y)) {{botb: x, eotb: x, bote: y}}
+    rule(begin: subtree(:x), eote: subtree(:z)) {{botb: x, eotb: x, eote: z}}
+    rule(begin: subtree(:x), bote: subtree(:y), eote: subtree(:z)) {{botb: x, eotb: x, bote: y, eote: z}}
 
-   
-    rule(:begin => subtree(:x)) { {botb: x, eotb: x}}
-    rule(:end => subtree(:x)) { {bote: x, eote: x}}
+    rule(end: subtree(:x)) { {bote: x, eote: x}}
+    rule(end: subtree(:x), botb: subtree(:y)) { {bote: x, eote: x, botb: y}}
+    rule(end: subtree(:x), eotb: subtree(:z)) { {bote: x, eote: x, eotb: z}}
+    rule(end: subtree(:x), botb: subtree(:y), eotb: subtree(:z)) { {bote: x, eote: x, botb: y,  eotb: z}}
+
+
+    rule(:in => subtree(:x)) { {eotb: x, bote: x}}
+    rule(:in => subtree(:x), eote: subtree(:y)) { {eotb: x, bote: x, eote: y}}
+
+    # This should never happen.
+    # rule(:in => subtree(:x), botb: subtree(:y)) { {eotb: x, bote: x, botb: y}}
+
+    # TODO: This should check for day precision, but currently does not.
+    rule(:on => subtree(:x)) { {eotb: x, bote: x, botb: x, eote: x}}
     rule(:nodate => simple(:x)) {nil}
 
     rule(:date => subtree(:x)) do |dictionary|
@@ -20,7 +36,6 @@ module CulturalDates
 
   class << self
 
-
      def to_edtf_date(d)
       
       if d[:day]
@@ -30,7 +45,11 @@ module CulturalDates
         date = Date.new(d[:year],d[:month])
         date.unspecified! :day
       elsif(d[:year])
-        date = Date.new(d[:year])
+        if (d[:era] == "BCE")
+          date = Date.new(d[:year]+1)
+        else
+          date = Date.new(d[:year])
+        end
         date.unspecified! :month
         date.unspecified! :day
       elsif(d[:decade])
@@ -40,8 +59,7 @@ module CulturalDates
         date.unspecified! :day
       elsif(d[:century])
         c = d[:century] * 100
-        c -=100 if (d[:era] == "BCE")
-
+        c -=99 if (d[:era] == "BCE")
         date = Date.new(c)         
         date.unspecified.year[3]= true 
         date.unspecified.year[2]= true
@@ -62,7 +80,6 @@ module CulturalDates
       date_obj = regularize_day(date_obj)
       date_obj
     end
-
 
 
       private

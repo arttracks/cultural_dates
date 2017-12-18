@@ -37,17 +37,17 @@ describe CulturalDates::DateTransform do
 
     it "creates EDTF for year precision BCE" do
       results = parse_and_tranform("1990 BCE")
-      results.must_equal "-1990-uu-uu"
+      results.must_equal "-1989-uu-uu"
     end
 
     it "creates EDTF for year precision BC" do
       results = parse_and_tranform("1 BC")
-      results.must_equal "-0001-uu-uu"
+      results.must_equal "0000-uu-uu"
     end
 
     it "creates EDTF for year precision BCE with uncertainty" do
       results = parse_and_tranform("1990 BCE?")
-      results.must_equal "-1990-uu-uu?"
+      results.must_equal "-1989-uu-uu?"
     end
 
     it "creates EDTF for year precision with uncertainty" do
@@ -62,12 +62,12 @@ describe CulturalDates::DateTransform do
 
     it "creates EDTF for centuries BCE" do
       results = parse_and_tranform("the 3rd century BCE")
-      results.must_equal "-03uu-uu-uu"
+      results.must_equal "-02uu-uu-uu"
     end
 
     it "creates EDTF for centuries BC" do
       results = parse_and_tranform("the 3rd century BC")
-      results.must_equal "-03uu-uu-uu"
+      results.must_equal "-02uu-uu-uu"
     end
 
     it "creates EDTF for uncertain centuries" do

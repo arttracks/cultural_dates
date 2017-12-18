@@ -16,18 +16,19 @@ module CulturalDates
     rule(:after)                { sometime.maybe >> str("after")   >> space }
     rule(:by)                   { str("by")                        >> space }
     rule(:at_least)             { str("at least")                  >> space }
-    rule(:before)               { sometime.maybe >> str("before")  >> space }
+    rule(:before)               { str("no later than")             >> space }
     rule(:between)              { sometime.maybe >> str("between") >> space }
-    rule(:in_kw)                { sometime.maybe >> str("in")      >> space }
+    rule(:in_kw)                { str("throughout")                >> space }
+    rule(:on_kw)                { str("on")                        >> space }
     rule(:and_kw)               { space? >> str("and")             >> space?}
 
     # CLAUSES
     rule(:begin_date)    { after    >> date.as(:botb) | 
-                           by       >> date.as(:eotb) |
-                           before   >> date.as(:eotb) }
+                           by       >> date.as(:eotb) }
     rule(:end_date)      { at_least >> date.as(:bote) | 
                            before   >> date.as(:eote) }
     rule(:in_date)       { in_kw    >> date.as(:in) }
+    rule(:on_date)       { on_kw    >> date.as(:on) }
     rule(:between_begin) { between  >> date.as(:botb) >> and_kw >> date.as(:eotb)}
     rule(:between_end)   { between  >> date.as(:bote) >> and_kw >> date.as(:eote)}
    
@@ -36,13 +37,13 @@ module CulturalDates
    
     # SENTENCE GRAMMARS
     rule(:one_date)  {
-                       start_clause >>begin_end_separator >>  end_clause |
-                       start_clause |
+                       start_clause >> begin_end_separator >> end_clause |
+                       start_clause >> begin_end_separator.absent? |
                        begin_end_separator >> end_clause
                      }
     
 
-    rule(:date_string) { one_date | no_date }
+    rule(:date_string) { one_date | on_date | no_date }
     root(:date_string)
 
   end

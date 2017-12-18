@@ -15,14 +15,14 @@ describe CulturalDates::DateParser do
   end
 
   it "works with centuries" do
-    results = p.parse("the 19th Century")
+    results = p.parse("the 19th century")
     results[:date][:century].must_equal "19"
     results[:date][:era].must_equal ""
   end
 
 
   it "works with centuries BV" do
-    results = p.parse("the 19th Century BC")
+    results = p.parse("the 19th century BC")
     results[:date][:century].must_equal "19"
     results[:date][:era].must_equal "BC"
   end

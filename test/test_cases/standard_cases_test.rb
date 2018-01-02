@@ -2,12 +2,12 @@ require "json"
 require_relative "../test_helper.rb"
 
 describe "Timespan Test Cases" do
-  Dir.glob("../edtf_test_cases/tests/timespan_tests/**/*.json") do |test_case_file| 
+Dir.glob("../edtf_test_cases/tests/timespan_tests/**/*.json") do |test_case_file| 
 
     test_case = JSON.parse(File.read(test_case_file))
     test_case["human"].each do |language, value|
 
-      debug = value == "in 1980 until no later than 1990"
+      debug = (value == "in 1980 until no later than 1990")
       val = CulturalInterval.parse(value, debug)
 
       describe "The test case \"#{test_case["description"]}\" in #{language}" do
